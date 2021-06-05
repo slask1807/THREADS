@@ -1,31 +1,31 @@
 package by.epam.learn.io.PropDemo;
 
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-class CyclicBarrierExample
-{
+class CyclicBarrierExample {
     private static CyclicBarrier Line;
-    private static final int Line_size = 5;
+    private static final int Line_size = 4;
 
     // Полосы
-    public static class LineBoat implements Runnable
-    {
+    public static class LineBoat implements Runnable {
         @Override
         public void run() {
             try {
                 // Задержка на взлете
                 System.out.println(
                         "\n Полоса приняла самолет");
-                Thread.sleep(500);
+                Thread.sleep(50);
                 System.out.println(
                         "Полоса освободилась\n");
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
         }
     }
 
     // Класс автомобиля
-    public static class Car implements Runnable
-    {
+    public static class Car implements Runnable {
         private int carNumber;
 
         public Car(int carNumber) {
@@ -35,17 +35,21 @@ class CyclicBarrierExample
         @Override
         public void run() {
             try {
-                System.out.printf(
-                        "Самолет %d начал выход на полосу \n",
-                        carNumber);
-                // Вызов метода await при подходе к
-                // барьеру; поток блокируется в ожидании
-                // прихода остальных потоков
-               Line.await();
+                try {
+                    System.out.printf(
+                            "Самолет %d начал выход на полосу \n",
+                            carNumber);
+                    // Вызов метода await при подходе к
+                    // барьеру; поток блокируется в ожидании
+                    // прихода остальных потоков
+                    Line.await(2, TimeUnit.SECONDS);
+                } catch (Exception e) {
+                }
                 System.out.printf(
                         "Самолет %d взлетел\n",
                         carNumber);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
